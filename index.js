@@ -14,5 +14,8 @@ io.on('connection', function(socket) {
     socket.on('rotation_command', function(command){
         io.emit('rotation_command_from_user', command);
     });
+    socket.on('move_command', function(command){
+        io.emit('move_command_from_user', command);
+    });
 });
 http.listen(80, () => {console.log('listening on 80')});
