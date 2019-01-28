@@ -1,10 +1,32 @@
 var path = require('path')
 var fs = require('fs')
-var express = require('express');
+var express = require('express')
 var app = express()
-var http = require('http').Server()
+var http = require('http').Server(app)
 var io = require('socket.io')(http)
+var cookieParser = require('cookie-parser')
+var session = require('express-session')
+var bodyParser = require('body-parser')
+var url = require('querystring')
+var cache = require('memory-cache');
 
+
+
+app.use(cookieParser())
+app.use(session({secret: 'secret', 
+                 saveUninitialized: true,
+                 resave: true}))
+
+app.get('/sstore', function(req, res) {
+let lastcommand = req.query.lastcommand;
+cache.put(req.query.sid, req.query.lastcommand);
+res.send();
+});
+
+app.get('/lastcommand', function(req, res) {
+let lastcommand = req.session.lastcommand;
+res.send(cache.get(req.query.sid));
+});
 
 io.on('connection', function(socket) {
     console.log('a connection happened');
